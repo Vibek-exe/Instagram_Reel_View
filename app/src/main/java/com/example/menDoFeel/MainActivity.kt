@@ -28,7 +28,7 @@ class MainActivity : AppCompatActivity() {
         })
 
         binding.viewPager2.adapter = adapter
-        
+
         videos.add(
             Video(
                 "For Bigger Blazes",
