@@ -23,9 +23,10 @@ class MainActivity : AppCompatActivity() {
 
         videos.add(
             Video(
-                "Big Buck Bunny",
-                "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4"
-            )
+                "For Bigger Blazes",
+                "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4"
+        )
+
         )
 
         videos.add(
@@ -37,8 +38,8 @@ class MainActivity : AppCompatActivity() {
 
         videos.add(
             Video(
-                "For Bigger Blazes",
-                "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4"
+                "Big Buck Bunny",
+                "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4"
             )
         )
 
