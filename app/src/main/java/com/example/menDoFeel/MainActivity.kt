@@ -5,7 +5,7 @@ import android.os.Bundle
 import androidx.viewpager2.widget.ViewPager2
 import com.example.menDoFeel.adapters.VideoAdapter
 import com.example.menDoFeel.databinding.ActivityMainBinding
-import com.example.menDoFeel.model.ExoPlayerItem
+import com.example.menDoFeel.model.ItemPlayer
 import com.example.menDoFeel.model.Video
 
 class MainActivity : AppCompatActivity() {
@@ -14,18 +14,26 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var adapter: VideoAdapter
     private val videos = ArrayList<Video>()
-    private val exoPlayerItems = ArrayList<ExoPlayerItem>()
+    private val itemPlayers = ArrayList<ItemPlayer>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        adapter = VideoAdapter(this, videos, object : VideoAdapter.OnVideoPreparedListener {
+            override fun onVideoPrepared(itemPlayer: ItemPlayer) {
+                itemPlayers.add(itemPlayer)
+            }
+        })
+
+        binding.viewPager2.adapter = adapter
+        
         videos.add(
             Video(
                 "For Bigger Blazes",
                 "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4"
-        )
+            )
 
         )
 
@@ -43,25 +51,24 @@ class MainActivity : AppCompatActivity() {
             )
         )
 
-        adapter = VideoAdapter(this, videos, object : VideoAdapter.OnVideoPreparedListener {
-            override fun onVideoPrepared(exoPlayerItem: ExoPlayerItem) {
-                exoPlayerItems.add(exoPlayerItem)
-            }
-        })
-
-        binding.viewPager2.adapter = adapter
+        videos.add(
+            Video(
+                "In Dream",
+                "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4"
+            )
+        )
 
         binding.viewPager2.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
             override fun onPageSelected(position: Int) {
-                val previousIndex = exoPlayerItems.indexOfFirst { it.exoPlayer.isPlaying }
+                val previousIndex = itemPlayers.indexOfFirst { it.exoPlayer.isPlaying }
                 if (previousIndex != -1) {
-                    val player = exoPlayerItems[previousIndex].exoPlayer
+                    val player = itemPlayers[previousIndex].exoPlayer
                     player.pause()
                     player.playWhenReady = false
                 }
-                val newIndex = exoPlayerItems.indexOfFirst { it.position == position }
+                val newIndex = itemPlayers.indexOfFirst { it.position == position }
                 if (newIndex != -1) {
-                    val player = exoPlayerItems[newIndex].exoPlayer
+                    val player = itemPlayers[newIndex].exoPlayer
                     player.playWhenReady = true
                     player.play()
                 }
@@ -72,9 +79,9 @@ class MainActivity : AppCompatActivity() {
     override fun onPause() {
         super.onPause()
 
-        val index = exoPlayerItems.indexOfFirst { it.position == binding.viewPager2.currentItem }
+        val index = itemPlayers.indexOfFirst { it.position == binding.viewPager2.currentItem }
         if (index != -1) {
-            val player = exoPlayerItems[index].exoPlayer
+            val player = itemPlayers[index].exoPlayer
             player.pause()
             player.playWhenReady = false
         }
@@ -83,9 +90,9 @@ class MainActivity : AppCompatActivity() {
     override fun onResume() {
         super.onResume()
 
-        val index = exoPlayerItems.indexOfFirst { it.position == binding.viewPager2.currentItem }
+        val index = itemPlayers.indexOfFirst { it.position == binding.viewPager2.currentItem }
         if (index != -1) {
-            val player = exoPlayerItems[index].exoPlayer
+            val player = itemPlayers[index].exoPlayer
             player.playWhenReady = true
             player.play()
         }
@@ -93,8 +100,8 @@ class MainActivity : AppCompatActivity() {
 
     override fun onDestroy() {
         super.onDestroy()
-        if (exoPlayerItems.isNotEmpty()) {
-            for (item in exoPlayerItems) {
+        if (itemPlayers.isNotEmpty()) {
+            for (item in itemPlayers) {
                 val player = item.exoPlayer
                 player.stop()
                 player.clearMediaItems()

@@ -8,7 +8,7 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import com.example.menDoFeel.databinding.ListVideoBinding
-import com.example.menDoFeel.model.ExoPlayerItem
+import com.example.menDoFeel.model.ItemPlayer
 import com.example.menDoFeel.model.Video
 import com.google.android.exoplayer2.ExoPlayer
 import com.google.android.exoplayer2.MediaItem
@@ -42,6 +42,7 @@ class VideoAdapter(
                     Toast.makeText(context, "Can't play this video", Toast.LENGTH_SHORT).show()
                 }
 
+                @Deprecated("Deprecated in Java")
                 override fun onPlayerStateChanged(playWhenReady: Boolean, playbackState: Int) {
                     if (playbackState == Player.STATE_BUFFERING) {
                         binding.pbLoading.visibility = View.VISIBLE
@@ -68,7 +69,7 @@ class VideoAdapter(
                 exoPlayer.play()
             }
 
-            videoPreparedListener.onVideoPrepared(ExoPlayerItem(exoPlayer, absoluteAdapterPosition))
+            videoPreparedListener.onVideoPrepared(ItemPlayer(exoPlayer, absoluteAdapterPosition))
         }
     }
 
@@ -89,6 +90,6 @@ class VideoAdapter(
     }
 
     interface OnVideoPreparedListener {
-        fun onVideoPrepared(exoPlayerItem: ExoPlayerItem)
+        fun onVideoPrepared(itemPlayer: ItemPlayer)
     }
 }
